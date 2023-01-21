@@ -1,10 +1,12 @@
+import simpy
 import random
 import math
 
-import simpy
 
 from graphicPlotting import graphic
 from  ananlytiquesPerformances import ananlytiquesPerfom
+
+
 
 
 
@@ -95,10 +97,7 @@ def process(env, nombre_serveur, mu, lmbda):
     env.process(client(env, i, bureauDePoste))
     while env.now < temp_Sim:
       yield env.timeout(bureauDePoste.getNext_arrive_departure_Time(lmbda))  # lmbda pour calculer le temp de d'arrive pour ce client
-      if bureauDePoste.getNext_arrive_departure_Time(lmbda)+env.now > temp_Sim:
-          print(f' --- ! Fin de journée Arrêt de la réception ---')
-          print('-------------------------------')
-          break
+      if bureauDePoste.getNext_arrive_departure_Time(lmbda)+env.now > temp_Sim: break
       i += 1
       env.process(client(env, i, bureauDePoste))
 
@@ -122,9 +121,7 @@ def Start():
         env = simpy.Environment()
         env.process(process(env, Nombre_Guichet, mu, lmbda))
         env.run()
-        print('-------------------------------')
-        print('Fermeture de la Poste')
-        print(f'{clients_servie} Client Servie')
+        print('Client Servie',clients_servie)
         client_served_list.append(clients_servie)
         sim_index_list.append(iteration_number)
         Stime_list.append(sum(stat['Stime']))
@@ -145,7 +142,7 @@ def Start():
     #print('Stime_list', Stime_list)
     #print('Client_List', client_served_list)
     ananlytiquesPerfom(lmbda, mu).showPerforamnces()
-    #graphic().plot_v1(sim_index_list, client_served_list, Stime_list)
+    graphic().plot_v1(sim_index_list, client_served_list, Stime_list)
 
 
 def round_down(number):
